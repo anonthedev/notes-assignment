@@ -2,9 +2,6 @@
 
 import './styles.css'
 
-import { Color } from '@tiptap/extension-color'
-import ListItem from '@tiptap/extension-list-item'
-import TextStyle from '@tiptap/extension-text-style'
 import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
@@ -29,10 +26,9 @@ import {
   X,
   Save,
 } from "lucide-react";
-import { MouseEventHandler, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import axios from 'axios'
-import { toast } from 'sonner'
+import { MouseEventHandler, useEffect, useState } from 'react'
+import { useCreateNote, useUpdateNote } from '@/lib/hooks/use-notes'
+import { useRouter } from 'next/navigation'
 
 type MenuBarProps = {
   editor: Editor | null;
@@ -40,7 +36,7 @@ type MenuBarProps = {
   saving: boolean;
 };
 
-const MenuBar: React.FC<MenuBarProps> = ({ editor, saveNotesFunc, saving }) => {
+const MenuBar = ({ editor, saveNotesFunc, saving }: MenuBarProps) => {
   if (!editor) {
     return null;
   }
@@ -246,9 +242,11 @@ interface NoteProps {
 }
 
 export default function Note({ serverNotes = "", uuid, title = "", email = "" }: NoteProps) {
-  const [notes, setNotes] = useState(serverNotes);
-  const [saving, setSaving] = useState(false);
-  const supabase = createClient();
+  const [notes, setNotes] = useState(serverNotes)
+  const router = useRouter()
+  
+  const createNote = useCreateNote()
+  const updateNote = useUpdateNote()
 
   const editor = useEditor({
     extensions: [
@@ -265,51 +263,46 @@ export default function Note({ serverNotes = "", uuid, title = "", email = "" }:
     },
   });
 
+  useEffect(() => {
+    if (serverNotes && editor && !editor.isDestroyed) {
+      editor.commands.setContent(serverNotes)
+    }
+  }, [serverNotes, editor])
+
   async function saveNotes(e: React.MouseEvent<HTMLButtonElement>) {
-    setSaving(true);
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('No session found');
-      }
-
-      // If UUID exists, update the note, otherwise create a new one
-      const endpoint = uuid ? `/api/notes?uuid=${encodeURIComponent(uuid)}` : '/api/notes';
-      const method = uuid ? 'PUT' : 'POST';
-
-      const response = await axios({
-        method,
-        url: endpoint,
-        data: { 
-          notes,
-          title,
-          email
-        },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        toast.success(uuid ? "Notes saved successfully" : "New note created successfully");
-        // If this was a new note, redirect to the note's page
-        if (!uuid && response.data?.[0]?.uuid) {
-          window.location.href = `/note/${response.data[0].uuid}`;
+    if (uuid) {
+      // Update existing note
+      updateNote.mutate({
+        uuid,
+        notes,
+        title,
+        email,
+      }, {
+        onSuccess: (data) => {
+          // Note is automatically updated in cache
         }
-      }
-    } catch (error) {
-      console.error("Error saving notes:", error);
-      toast.error("Couldn't save notes");
-    } finally {
-      setSaving(false);
+      })
+    } else {
+      // Create new note
+      createNote.mutate({
+        notes,
+        title,
+        email,
+      }, {
+        onSuccess: (data) => {
+          router.push(`/note/${data.uuid}`)
+        }
+      })
     }
   }
 
   return (
     <div className="text-editor unreset h-screen border-2 p-2 flex flex-col gap-2">
-      <MenuBar editor={editor} saveNotesFunc={saveNotes} saving={saving} />
+      <MenuBar 
+        editor={editor} 
+        saveNotesFunc={saveNotes} 
+        saving={createNote.isPending || updateNote.isPending} 
+      />
       <EditorContent editor={editor} />
     </div>
   );

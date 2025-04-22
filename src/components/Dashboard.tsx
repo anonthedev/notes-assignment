@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -14,45 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createClient } from "@/lib/supabase/client";
-import { LogOut } from "lucide-react";
-
-interface Note {
-  uuid: string;
-  title: string;
-  notes: string;
-  created_at: string;
-}
+import { LogOut, Trash2, FileText } from "lucide-react";
+import { useNotes, useDeleteNote } from "@/lib/hooks/use-notes";
 
 export default function Dashboard() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const { data: notes = [], isLoading } = useNotes();
   const router = useRouter();
   const supabase = createClient();
-
-  useEffect(() => {
-    const fetchUserAndNotes = async () => {
-      try {
-        // Get user session
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
-
-        // Fetch notes
-        const response = await fetch("/api/notes");
-        if (!response.ok) {
-          throw new Error("Failed to fetch notes");
-        }
-        const data = await response.json();
-        setNotes(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserAndNotes();
-  }, []);
+  const deleteNote = useDeleteNote();
 
   const handleSignOut = async () => {
     try {
@@ -63,7 +31,19 @@ export default function Dashboard() {
     }
   };
 
-  if (loading) {
+  const handleDelete = async (uuid: string, e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    if (window.confirm('Are you sure you want to delete this note?')) {
+      deleteNote.mutate(uuid);
+    }
+  };
+
+  const handleSummarize = (uuid: string, e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    router.push(`/note/${uuid}/summary`);
+  };
+
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-xl">Loading...</div>
@@ -88,18 +68,15 @@ export default function Dashboard() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
-                  <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                  <AvatarImage src={undefined} alt="User" />
+                  <AvatarFallback>U</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user?.email}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user?.email}
-                  </p>
+                  <p className="text-sm font-medium leading-none">User</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -119,19 +96,40 @@ export default function Dashboard() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {notes.map((note) => (
-            <Link
+            <div
               key={note.uuid}
-              href={`/note/${note.uuid}`}
-              className="border rounded-lg p-4 cursor-pointer hover:shadow-lg transition-shadow"
+              className="border rounded-lg p-4 hover:shadow-lg transition-shadow relative group"
             >
-              <h2 className="text-xl font-semibold mb-2">
-                {note.title || "Untitled Note"}
-              </h2>
-              <p className="text-gray-600 line-clamp-3">{note.notes}</p>
-              <div className="text-sm text-gray-400 mt-2">
-                {new Date(note.created_at).toLocaleDateString()}
+              <Link href={`/note/${note.uuid}`} className="block">
+                <h2 className="text-xl font-semibold mb-2">
+                  {note.title || "Untitled Note"}
+                </h2>
+                <p className="text-gray-600 line-clamp-3">{note.notes}</p>
+                <div className="text-sm text-gray-400 mt-2">
+                  {new Date(note.created_at).toLocaleDateString()}
+                </div>
+              </Link>
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-500 hover:text-blue-500"
+                  onClick={(e) => handleSummarize(note.uuid, e)}
+                  title="Summarize"
+                >
+                  <FileText className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-500 hover:text-red-500"
+                  onClick={(e) => handleDelete(note.uuid, e)}
+                  title="Delete"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}
