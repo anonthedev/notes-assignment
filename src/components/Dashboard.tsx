@@ -111,18 +111,18 @@ export default function Dashboard() {
               </Link>
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-blue-500"
+                  className="cursor-pointer h-8 w-8 text-gray-500 hover:text-blue-500"
                   onClick={(e) => handleSummarize(note.uuid, e)}
                   title="Summarize"
                 >
                   <FileText className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-red-500"
+                  className="cursor-pointer h-8 w-8 text-gray-500 hover:text-red-500"
                   onClick={(e) => handleDelete(note.uuid, e)}
                   title="Delete"
                 >

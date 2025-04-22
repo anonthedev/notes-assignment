@@ -89,3 +89,24 @@
       margin: 2rem 0;
     }
   }
+
+.menu-item {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.menu-item:hover {
+    background-color: #f3f4f6;
+}
+
+.menu-item.active {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+
+.menu-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: transparent;
+}

@@ -7,7 +7,7 @@ const groq = new Groq({
 
 export async function POST(request: NextRequest) {
   try {
-    const { text } = await request.json();
+    const { text, model = "llama3-70b-8192" } = await request.json();
 
     if (!text) {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
           content: `Please summarize the following text:\n\n${text}`,
         },
       ],
-      model: "gemma2-9b-it",
+      model,
       temperature: 0.5,
       max_tokens: 1024,
     });

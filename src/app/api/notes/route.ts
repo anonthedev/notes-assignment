@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { notes, title, email } = body;
+    const { notes, title, email, summary } = body;
 
     if (!notes) {
       return NextResponse.json(
@@ -83,6 +83,7 @@ export async function PUT(request: NextRequest) {
         title,
         email: email || user.email,
         updated_at: new Date().toISOString(),
+        summary,
       })
       .eq("uuid", uuid)
       .eq("email", user.email)

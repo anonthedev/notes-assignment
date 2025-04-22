@@ -10,12 +10,14 @@ interface Note {
   email: string
   created_at: string
   updated_at: string
+  summary?: string
 }
 
 interface CreateNoteInput {
   notes: string
   title?: string
   email?: string
+  summary?: string
 }
 
 interface UpdateNoteInput extends CreateNoteInput {

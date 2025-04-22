@@ -18,10 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} `}>
         <QueryProvider>
           {children}
-          <Toaster />
+          <Toaster richColors />
         </QueryProvider>
       </body>
     </html>
