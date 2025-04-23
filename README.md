@@ -9,7 +9,7 @@ A full-stack note-taking application built with **Next.js 15**, **React 19**, **
 - **Notes CRUD:** Create, read, update, and delete notes. Each note supports rich text formatting.
 - **AI Summarization:** Instantly generate concise summaries of your notes using an integrated AI API (powered by GROQ).
 - **Auto-Save & Summarize:** Notes can be summarized and changes are saved in real-time.
-- **Responsive UI:** Built using Tailwind CSS and Radix UI for a modern, accessible experience.
+- **Responsive UI:** Built using Tailwind CSS and Shadcn for a modern, accessible experience.
 - **Theming:** Light/dark mode toggle.
 
 ---
@@ -77,7 +77,7 @@ notes-assignment/
 ---
 
 ## Implementation Overview
-- **Frontend:** Built with Next.js App Router, React 19, and Tailwind CSS. Uses Radix UI for accessible components and Tiptap for the rich text editor.
+- **Frontend:** Built with Next.js App Router, React 19, and Tailwind CSS. Uses Shadcn for accessible components and Tiptap for the rich text editor.
 - **Authentication:** Managed via Supabase Auth (email/password and Google OAuth). Session is handled in middleware and on the client.
 - **Notes API:** CRUD operations are handled via Next.js API routes (`/api/notes`). Each request checks user authentication with Supabase before accessing or mutating notes.
 - **AI Summarization:** GROQ's API is used to generate summaries for notes. The API key is securely stored in the environment variables.

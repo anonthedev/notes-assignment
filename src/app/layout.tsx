@@ -29,7 +29,9 @@ export default function RootLayout({
         >
           <QueryProvider>
             {children}
-            <ThemeToggle />
+            <div className="fixed bottom-5 right-5 z-50">
+              <ThemeToggle />
+            </div>
             <Toaster richColors />
           </QueryProvider>
         </ThemeProvider>
