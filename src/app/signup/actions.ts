@@ -12,9 +12,25 @@ export type SignupError = {
 export async function signup(formData: FormData): Promise<SignupError | undefined> {
   const supabase = await createClient()
 
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const emailRegex = /^[^\s@]+@[^@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return {
+      type: 'INVALID_EMAIL',
+      message: 'Please enter a valid email address'
+    }
+  }
+  if (!password || password.length < 3) {
+    return {
+      type: 'INVALID_PASSWORD',
+      message: 'Password should be at least 3 characters long'
+    }
+  }
+
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email,
+    password,
   }
 
   const { error } = await supabase.auth.signUp(data)

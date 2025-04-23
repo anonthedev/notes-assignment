@@ -13,11 +13,25 @@ export type AuthError = {
 export async function login(formData: FormData): Promise<AuthError | undefined> {
   const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return {
+      type: 'INVALID_CREDENTIALS',
+      message: 'Please enter a valid email address'
+    }
+  }
+  if (!password || password.length < 3) {
+    return {
+      type: 'INVALID_CREDENTIALS',
+      message: 'Password should be at least 3 characters long'
+    }
+  }
+
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email,
+    password,
   }
 
   console.log(data)

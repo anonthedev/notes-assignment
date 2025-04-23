@@ -15,6 +15,30 @@ export function SignupForm() {
 
   async function handleSignup(formData: FormData) {
     setIsLoading(true)
+    // Client-side validation for email and password
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setIsLoading(false)
+      toast.error(() => (
+        <div className="flex flex-col gap-2">
+          <p className="font-medium">Invalid email</p>
+          <p className="text-sm text-muted-foreground">Please enter a valid email address</p>
+        </div>
+      ))
+      return
+    }
+    if (!password || password.length < 3) {
+      setIsLoading(false)
+      toast.error(() => (
+        <div className="flex flex-col gap-2">
+          <p className="font-medium">Invalid password</p>
+          <p className="text-sm text-muted-foreground">Password should be at least 3 characters long</p>
+        </div>
+      ))
+      return
+    }
     const error = await signup(formData)
     
     if (error) {
