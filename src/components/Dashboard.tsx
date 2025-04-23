@@ -80,7 +80,7 @@ export default function Dashboard() {
             asChild
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
           >
-            <Link href={"/note"}>Create New Note</Link>
+            <Link target="_blank" href={"/note"}>Create New Note</Link>
           </Button>
 
           <DropdownMenu>
@@ -126,26 +126,26 @@ export default function Dashboard() {
                   <h2 className="text-xl font-semibold mb-2">
                     {note.title || "Untitled Note"}
                   </h2>
-                  <p className="text-gray-600 line-clamp-3">{stripHtmlTags(note.notes)}</p>
+                  <p className="text-muted-foreground line-clamp-3">{stripHtmlTags(note.notes)}</p>
                 </div>
-                <div className="text-sm text-gray-400 self-end">
+                <div className="text-sm text-muted-foreground self-end">
                   Updated at - {new Date(note.updated_at).toLocaleDateString()}
                 </div>
               </Link>
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="icon"
-                  className="cursor-pointer h-8 w-8 text-gray-500 hover:text-blue-500"
+                  className="cursor-pointer h-8 w-8 text-muted-foreground hover:text-blue-500"
                   onClick={(e) => handleSummarize(note.uuid, e)}
                   title="Summarize"
                 >
                   <FileText className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="icon"
-                  className="cursor-pointer h-8 w-8 text-gray-500 hover:text-red-500"
+                  className="cursor-pointer h-8 w-8 text-muted-foreground hover:text-red-500"
                   onClick={(e) => handleDelete(note.uuid, e)}
                   title="Delete"
                 >

@@ -96,10 +96,6 @@
     transition: all 0.2s ease-in-out;
 }
 
-.menu-item:hover {
-    background-color: #f3f4f6;
-}
-
 .menu-item.active {
     background-color: #e5e7eb;
     color: #111827;

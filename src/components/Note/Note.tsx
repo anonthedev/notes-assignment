@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import './styles.css'
+import "./styles.css";
 
-import { Editor, EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
 import {
   Bold,
   Italic,
@@ -26,9 +26,10 @@ import {
   X,
   Save,
 } from "lucide-react";
-import { MouseEventHandler, useEffect, useState } from 'react'
-import { useCreateNote, useUpdateNote } from '@/lib/hooks/use-notes'
-import { useRouter } from 'next/navigation'
+import { MouseEventHandler, useEffect, useState } from "react";
+import { useCreateNote, useUpdateNote } from "@/lib/hooks/use-notes";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 type MenuBarProps = {
   editor: Editor | null;
@@ -41,7 +42,7 @@ type MenuButtonConfig = {
   title: string;
   action: (editor: Editor) => void;
   isActive?: (editor: Editor) => boolean;
-}
+};
 
 const menuButtons: MenuButtonConfig[] = [
   {
@@ -65,19 +66,22 @@ const menuButtons: MenuButtonConfig[] = [
   {
     icon: Heading1,
     title: "Heading 1",
-    action: (editor) => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    action: (editor) =>
+      editor.chain().focus().toggleHeading({ level: 1 }).run(),
     isActive: (editor) => editor.isActive("heading", { level: 1 }),
   },
   {
     icon: Heading2,
     title: "Heading 2",
-    action: (editor) => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+    action: (editor) =>
+      editor.chain().focus().toggleHeading({ level: 2 }).run(),
     isActive: (editor) => editor.isActive("heading", { level: 2 }),
   },
   {
     icon: Heading3,
     title: "Heading 3",
-    action: (editor) => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+    action: (editor) =>
+      editor.chain().focus().toggleHeading({ level: 3 }).run(),
     isActive: (editor) => editor.isActive("heading", { level: 3 }),
   },
   {
@@ -169,7 +173,9 @@ const MenuBar = ({ editor, saveNotesFunc, saving }: MenuBarProps) => {
         const Icon = button.icon;
         if (button.title === "Save") {
           return (
-            <button
+            <Button
+              variant={"ghost"}
+              size={"icon"}
               key={index}
               onClick={saveNotesFunc}
               disabled={saving}
@@ -177,13 +183,15 @@ const MenuBar = ({ editor, saveNotesFunc, saving }: MenuBarProps) => {
               className="menu-item cursor-pointer"
             >
               <Icon size={20} />
-            </button>
+            </Button>
           );
         }
-        
+
         return (
-          <button
+          <Button
             key={index}
+            variant={"ghost"}
+            size={"icon"}
             onClick={() => button.action(editor)}
             className={`menu-item cursor-pointer ${
               button.isActive?.(editor) ? "active" : ""
@@ -192,7 +200,7 @@ const MenuBar = ({ editor, saveNotesFunc, saving }: MenuBarProps) => {
             title={button.title}
           >
             <Icon size={20} />
-          </button>
+          </Button>
         );
       })}
     </div>
@@ -206,13 +214,18 @@ interface NoteProps {
   email?: string;
 }
 
-export default function Note({ serverNotes = "", uuid, title = "", email = "" }: NoteProps) {
-  const [notes, setNotes] = useState(serverNotes)
-  const [noteTitle, setNoteTitle] = useState(title)
-  const router = useRouter()
-  
-  const createNote = useCreateNote()
-  const updateNote = useUpdateNote()
+export default function Note({
+  serverNotes = "",
+  uuid,
+  title = "",
+  email = "",
+}: NoteProps) {
+  const [notes, setNotes] = useState(serverNotes);
+  const [noteTitle, setNoteTitle] = useState(title);
+  const router = useRouter();
+
+  const createNote = useCreateNote();
+  const updateNote = useUpdateNote();
 
   const editor = useEditor({
     extensions: [
@@ -222,7 +235,9 @@ export default function Note({ serverNotes = "", uuid, title = "", email = "" }:
         allowBase64: false,
       }),
     ],
-    content: serverNotes || `<h2>Start taking notes!</h2>
+    content:
+      serverNotes ||
+      `<h2>Start taking notes!</h2>
     <p>Use the toolbar above to format your notes.</p>`,
     onUpdate({ editor }) {
       setNotes(editor.getHTML());
@@ -231,40 +246,45 @@ export default function Note({ serverNotes = "", uuid, title = "", email = "" }:
 
   useEffect(() => {
     if (serverNotes && editor && !editor.isDestroyed) {
-      editor.commands.setContent(serverNotes)
+      editor.commands.setContent(serverNotes);
     }
-  }, [serverNotes, editor])
+  }, [serverNotes, editor]);
 
   async function saveNotes(e: React.MouseEvent<HTMLButtonElement>) {
     if (uuid) {
-      updateNote.mutate({
-        uuid,
-        notes,
-        title: noteTitle,
-        email,
-      }, {
-        onSuccess: (data) => {
+      updateNote.mutate(
+        {
+          uuid,
+          notes,
+          title: noteTitle,
+          email,
+        },
+        {
+          onSuccess: (data) => {},
         }
-      })
+      );
     } else {
-      createNote.mutate({
-        notes,
-        title: noteTitle,
-        email,
-      }, {
-        onSuccess: (data) => {
-          router.push(`/note/${data.uuid}`)
+      createNote.mutate(
+        {
+          notes,
+          title: noteTitle,
+          email,
+        },
+        {
+          onSuccess: (data) => {
+            router.push(`/note/${data.uuid}`);
+          },
         }
-      })
+      );
     }
   }
 
   return (
     <div className="text-editor unreset w-full h-screen border-2 p-2 flex flex-col gap-2">
-      <MenuBar 
-        editor={editor} 
-        saveNotesFunc={saveNotes} 
-        saving={createNote.isPending || updateNote.isPending} 
+      <MenuBar
+        editor={editor}
+        saveNotesFunc={saveNotes}
+        saving={createNote.isPending || updateNote.isPending}
       />
       <input
         type="text"

@@ -185,14 +185,14 @@ export default function Page({
         </div>
       </div>
       <div className="space-y-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-background rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">
             {note?.title || "Untitled Note"}
           </h2>
           <div className="prose max-w-none">
             <h3 className="text-lg font-medium mb-2">Current Summary</h3>
             {summary ? (
-              <div className="bg-gray-50 p-4 rounded-md">
+              <div className="bg-secondary p-4 rounded-md">
                 <div className="prose">
                   <ReactMarkdown>
                     {summary}
@@ -206,7 +206,7 @@ export default function Page({
         </div>
 
         {(isGenerating || newSummary) && (
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-background rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">New Summary</h3>
               {newSummary && (
@@ -228,7 +228,7 @@ export default function Page({
               </div>
             ) : newSummary ? (
               <div className="prose max-w-none">
-                <div className="bg-blue-50 p-4 rounded-md">
+                <div className="bg-secondary p-4 rounded-md">
                   <div className="prose">
                     <ReactMarkdown>
                       {newSummary}
