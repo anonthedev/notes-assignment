@@ -70,9 +70,5 @@ export async function signupWithGoogle(): Promise<SignupError | undefined> {
     }
   }
 
-  // Debug log
-  console.log('Google OAuth redirect URL:', data?.url)
-
-  // Redirect user to Google OAuth consent screen
   redirect(data.url)
 }
