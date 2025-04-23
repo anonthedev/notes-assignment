@@ -6,14 +6,19 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export function LoginForm() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   async function handleLogin(formData: FormData) {
+    setIsLoading(true)
     const error = await login(formData)
     
     if (error) {
+      setIsLoading(false)
       switch (error.type) {
         case 'INVALID_CREDENTIALS':
           toast.error(() => (
@@ -66,13 +71,17 @@ export function LoginForm() {
             </div>
           ))
       }
+    } else {
+      setIsLoading(false)
     }
   }
 
   async function handleGoogleLogin() {
+    setIsGoogleLoading(true)
     const error = await loginWithGoogle()
     
     if (error) {
+      setIsGoogleLoading(false)
       toast.error(() => (
         <div className="flex flex-col gap-2">
           <p className="font-medium">Google login failed</p>
@@ -104,7 +113,9 @@ export function LoginForm() {
           </div>
 
           <div className="space-y-4">
-            <Button className="w-full" type="submit">Sign in</Button>
+            <Button className="w-full" type="submit" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
             
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -120,6 +131,7 @@ export function LoginForm() {
               className="w-full"
               onClick={handleGoogleLogin}
               type="button"
+              disabled={isGoogleLoading}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
@@ -139,7 +151,7 @@ export function LoginForm() {
                   fill="#EA4335"
                 />
               </svg>
-              Sign in with Google
+              {isGoogleLoading ? "Signing in with Google..." : "Sign in with Google"}
             </Button>
           </div>
 

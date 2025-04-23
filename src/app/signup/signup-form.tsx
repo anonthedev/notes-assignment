@@ -6,14 +6,19 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export function SignupForm() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   async function handleSignup(formData: FormData) {
+    setIsLoading(true)
     const error = await signup(formData)
     
     if (error) {
+      setIsLoading(false)
       switch (error.type) {
         case 'USER_EXISTS':
           toast.error(() => (
@@ -66,14 +71,19 @@ export function SignupForm() {
           <p className="text-sm text-muted-foreground">Please check your email to verify your account</p>
         </div>
       ))
-      router.push('/login')
+      // setTimeout(() => {
+      //   setIsLoading(false)
+      //   router.push('/login')
+      // }, 8000)
     }
   }
 
   async function handleGoogleSignup() {
+    setIsGoogleLoading(true)
     const error = await signupWithGoogle()
     
     if (error) {
+      setIsGoogleLoading(false)
       toast.error(() => (
         <div className="flex flex-col gap-2">
           <p className="font-medium">Google signup failed</p>
@@ -105,7 +115,9 @@ export function SignupForm() {
           </div>
 
           <div className="space-y-4">
-            <Button className="w-full" type="submit">Sign up</Button>
+            <Button className="w-full" type="submit" disabled={isLoading}>
+              {isLoading ? "Signing up..." : "Sign up"}
+            </Button>
             
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -120,6 +132,7 @@ export function SignupForm() {
               <Button 
                 variant="outline" 
                 className="w-full"
+                disabled={isGoogleLoading}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -139,7 +152,7 @@ export function SignupForm() {
                     fill="#EA4335"
                   />
                 </svg>
-                Sign up with Google
+                {isGoogleLoading ? "Signing up with Google..." : "Sign up with Google"}
               </Button>
             </form>
           </div>

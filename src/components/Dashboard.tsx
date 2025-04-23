@@ -15,6 +15,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { LogOut, Trash2, FileText } from "lucide-react";
 import { useNotes, useDeleteNote } from "@/lib/hooks/use-notes";
+import { useState, useEffect } from 'react';
 
 const stripHtmlTags = (html: string) => {
   return html?.replace(/<[^>]*>/g, '');
@@ -25,6 +26,20 @@ export default function Dashboard() {
   const router = useRouter();
   const supabase = createClient();
   const deleteNote = useDeleteNote();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) console.error('Error fetching user:', error);
+      if (user) setUser(user);
+    }
+    fetchUser();
+  }, [supabase]);
+
+  const displayName = user?.user_metadata?.full_name || user?.email || 'User';
+  const avatarUrl = user?.user_metadata?.avatar_url;
+  const fallbackInitial = displayName.charAt(0).toUpperCase();
 
   const handleSignOut = async () => {
     try {
@@ -72,15 +87,15 @@ export default function Dashboard() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={undefined} alt="User" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarImage src={avatarUrl} alt={displayName} />
+                  <AvatarFallback>{fallbackInitial}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">User</p>
+                  <p className="text-sm font-medium leading-none">{displayName}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
