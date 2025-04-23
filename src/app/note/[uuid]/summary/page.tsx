@@ -35,6 +35,8 @@ export default function Page({
   const [isGenerating, setIsGenerating] = useState(false);
   const [models, setModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("llama3-70b-8192");
+  const [summaryLength, setSummaryLength] = useState<string>("medium");
+  const [summaryTone, setSummaryTone] = useState<string>("neutral");
   const [isLoadingModels, setIsLoadingModels] = useState(true);
 
   useEffect(() => {
@@ -88,7 +90,9 @@ export default function Page({
         },
         body: JSON.stringify({ 
           text: note.notes,
-          model: selectedModel
+          model: selectedModel,
+          length: summaryLength,
+          tone: summaryTone
         }),
       });
 
@@ -136,7 +140,7 @@ export default function Page({
         summary: newSummary,
       });
       toast.success("New summary saved successfully");
-      setNewSummary(""); // Clear the new summary after saving
+      setNewSummary("");
     } catch (error) {
       console.error("Error saving new summary:", error);
       toast.error("Failed to save new summary");
@@ -170,6 +174,38 @@ export default function Page({
                   {model.id}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={summaryLength}
+            onValueChange={setSummaryLength}
+            disabled={isGenerating}
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Summary Length" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="short">Short</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="detailed">Detailed</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select
+            value={summaryTone}
+            onValueChange={setSummaryTone}
+            disabled={isGenerating}
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Summary Tone" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="neutral">Neutral</SelectItem>
+              <SelectItem value="formal">Formal</SelectItem>
+              <SelectItem value="casual">Casual</SelectItem>
+              <SelectItem value="technical">Technical</SelectItem>
+              <SelectItem value="simple">Simple</SelectItem>
             </SelectContent>
           </Select>
           <Button
