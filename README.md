@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Notes Assignment App
+
+A full-stack note-taking application built with **Next.js 15**, **React 19**, **Supabase** for authentication and storage, **Tailwind CSS** for styling, and **AI-powered note summarization**. This app allows users to sign up, log in, and manage their notes with a rich text editor interface. Notes are securely stored and associated with user accounts. You can also generate concise AI summaries of your notes with a single click.
+
+---
+
+## Features
+- **User Authentication:** Sign up, log in, and log out with email/password or Google OAuth (via Supabase Auth).
+- **Notes CRUD:** Create, read, update, and delete notes. Each note supports rich text formatting.
+- **AI Summarization:** Instantly generate concise summaries of your notes using an integrated AI API (powered by GROQ).
+- **Auto-Save & Summarize:** Notes can be summarized and changes are saved in real-time.
+- **Responsive UI:** Built using Tailwind CSS and Radix UI for a modern, accessible experience.
+- **Theming:** Light/dark mode toggle.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- **Node.js** (v18 or newer recommended)
+- **npm** (v9 or newer) or **yarn** or **pnpm**
+- **Supabase** project (get your API keys and URL)
+- **GROQ API Key** (for AI summarization)
 
+### 1. Clone the Repository
+```bash
+git clone <your-repo-url>
+cd notes-assignment
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### 3. Configure Environment Variables
+Create a `.env.local` file in the root directory and add:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+GROQ_API_KEY=your_groq_api_key
+```
+
+### 4. Run the Development Server
 ```bash
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to use the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can also try the deployed version here: [https://takenoteofit.vercel.app](https://takenoteofit.vercel.app)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project Structure
+```
+notes-assignment/
+├── src/
+│   ├── app/          # Next.js app directory
+│   ├── components/   # UI and feature components
+│   ├── lib/          # Hooks, providers, and Supabase utils
+│   └── middleware.ts # Session and auth middleware
+├── public/           # Static assets
+├── package.json      # Project dependencies and scripts
+└── README.md         # Project documentation
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Implementation Overview
+- **Frontend:** Built with Next.js App Router, React 19, and Tailwind CSS. Uses Radix UI for accessible components and Tiptap for the rich text editor.
+- **Authentication:** Managed via Supabase Auth (email/password and Google OAuth). Session is handled in middleware and on the client.
+- **Notes API:** CRUD operations are handled via Next.js API routes (`/api/notes`). Each request checks user authentication with Supabase before accessing or mutating notes.
+- **AI Summarization:** GROQ's API is used to generate summaries for notes. The API key is securely stored in the environment variables.
+- **State Management:** Uses React Query (`@tanstack/react-query`) for efficient data fetching and cache management.
+- **Theming:** ThemeProvider and ThemeToggle provide light/dark mode.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Deployment
+You can deploy this app on Vercel, Netlify, or any platform that supports Next.js. Make sure to set your environment variables in the deployment settings.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+MIT
+
+---
+
+## Acknowledgements
+- [Next.js](https://nextjs.org)
+- [Supabase](https://supabase.com)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Radix UI](https://www.radix-ui.com/)
+- [Tiptap Editor](https://tiptap.dev/)
+- [GROQ](https://groq.dev/)
+
+---
+
+## AI Summarization Feature
+
+This app includes an **AI-powered summarization** feature: you can generate concise summaries of your notes with a single click, making it easier to review and recall important information. Summarization is performed using an integrated AI API.
+
+---
+
+Feel free to contribute or open issues for suggestions and bugs!
