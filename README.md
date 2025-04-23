@@ -1,6 +1,6 @@
 # Notes Assignment App
 
-A full-stack note-taking application built with **Next.js 15**, **React 19**, **Supabase** for authentication and storage, **Tailwind CSS** for styling, and **AI-powered note summarization**. This app allows users to sign up, log in, and manage their notes with a rich text editor interface. Notes are securely stored and associated with user accounts. You can also generate concise AI summaries of your notes with a single click.
+A full-stack note-taking application built with **Next.js**, **Supabase** for authentication and storage, **Tailwind CSS** for styling, and **Groq** for AI note summarization. This app allows users to sign up, log in, and manage their notes with a rich text editor interface. Notes are securely stored and associated with user accounts. You can also generate concise AI summaries of your notes with a single click.
 
 ---
 
@@ -77,22 +77,16 @@ notes-assignment/
 ---
 
 ## Implementation Overview
-- **Frontend:** Built with Next.js App Router, React 19, and Tailwind CSS. Uses Shadcn for accessible components and Tiptap for the rich text editor.
+- **Frontend:** Built with Next.js App Router, Tailwind CSS, and Shadcn for accessible components and Tiptap for the rich text editor.
 - **Authentication:** Managed via Supabase Auth (email/password and Google OAuth). Session is handled in middleware and on the client.
 - **Notes API:** CRUD operations are handled via Next.js API routes (`/api/notes`). Each request checks user authentication with Supabase before accessing or mutating notes.
-- **AI Summarization:** GROQ's API is used to generate summaries for notes. The API key is securely stored in the environment variables.
+- **AI Summarization:** GROQ's API is used to generate summaries for notes.
 - **State Management:** Uses React Query (`@tanstack/react-query`) for efficient data fetching and cache management.
-- **Theming:** ThemeProvider and ThemeToggle provide light/dark mode.
 
 ---
 
 ## Deployment
 You can deploy this app on Vercel, Netlify, or any platform that supports Next.js. Make sure to set your environment variables in the deployment settings.
-
----
-
-## License
-MIT
 
 ---
 
@@ -105,11 +99,3 @@ MIT
 - [GROQ](https://groq.dev/)
 
 ---
-
-## AI Summarization Feature
-
-This app includes an **AI-powered summarization** feature: you can generate concise summaries of your notes with a single click, making it easier to review and recall important information. Summarization is performed using an integrated AI API.
-
----
-
-Feel free to contribute or open issues for suggestions and bugs!
