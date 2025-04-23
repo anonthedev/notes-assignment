@@ -16,6 +16,10 @@ import { createClient } from "@/lib/supabase/client";
 import { LogOut, Trash2, FileText } from "lucide-react";
 import { useNotes, useDeleteNote } from "@/lib/hooks/use-notes";
 
+const stripHtmlTags = (html: string) => {
+  return html?.replace(/<[^>]*>/g, '');
+};
+
 export default function Dashboard() {
   const { data: notes = [], isLoading } = useNotes();
   const router = useRouter();
@@ -32,14 +36,14 @@ export default function Dashboard() {
   };
 
   const handleDelete = async (uuid: string, e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault(); 
     if (window.confirm('Are you sure you want to delete this note?')) {
       deleteNote.mutate(uuid);
     }
   };
 
   const handleSummarize = (uuid: string, e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault();
     router.push(`/note/${uuid}/summary`);
   };
 
@@ -95,18 +99,22 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {notes.map((note) => (
+          {notes
+            .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+            .map((note) => (
             <div
               key={note.uuid}
-              className="border rounded-lg p-4 hover:shadow-lg transition-shadow relative group"
+              className="border rounded-lg p-4 hover:shadow-lg transition-shadow relative group h-[200px]"
             >
-              <Link href={`/note/${note.uuid}`} className="block">
-                <h2 className="text-xl font-semibold mb-2">
-                  {note.title || "Untitled Note"}
-                </h2>
-                <p className="text-gray-600 line-clamp-3">{note.notes}</p>
-                <div className="text-sm text-gray-400 mt-2">
-                  {new Date(note.created_at).toLocaleDateString()}
+              <Link href={`/note/${note.uuid}`} className="h-full flex flex-col">
+                <div className="flex-1">
+                  <h2 className="text-xl font-semibold mb-2">
+                    {note.title || "Untitled Note"}
+                  </h2>
+                  <p className="text-gray-600 line-clamp-3">{stripHtmlTags(note.notes)}</p>
+                </div>
+                <div className="text-sm text-gray-400 self-end">
+                  Updated at - {new Date(note.updated_at).toLocaleDateString()}
                 </div>
               </Link>
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">

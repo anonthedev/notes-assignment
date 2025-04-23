@@ -5,13 +5,11 @@ import Note from '@/components/Note/Note'
 import { createClient } from '@/lib/supabase/client'
 import { redirect } from 'next/navigation'
 import { useEffect } from "react";
-// import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 export default function Page() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Check authentication
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -33,7 +31,6 @@ export default function Page() {
       </Head>
       <main className="w justify-center h-full">
         <Note />
-        {/* <SimpleEditor/> */}
       </main>
     </>
   );
