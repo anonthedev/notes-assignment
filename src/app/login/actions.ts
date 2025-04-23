@@ -52,6 +52,9 @@ export async function login(formData: FormData): Promise<AuthError | undefined> 
 export async function loginWithGoogle(): Promise<AuthError | undefined> {
   const supabase = await createClient()
 
+  // Debug log
+  console.log('NEXT_PUBLIC_SITE_URL (loginWithGoogle):', process.env.NEXT_PUBLIC_SITE_URL)
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -65,6 +68,9 @@ export async function loginWithGoogle(): Promise<AuthError | undefined> {
       message: error.message
     }
   }
+
+  // Debug log
+  console.log('Google OAuth redirect URL:', data?.url)
 
   // Redirect user to Google OAuth consent screen
   redirect(data.url)
