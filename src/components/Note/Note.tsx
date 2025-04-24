@@ -289,10 +289,18 @@ export default function Note({
       <input
         type="text"
         value={noteTitle}
-        onChange={(e) => setNoteTitle(e.target.value)}
-        placeholder="Enter note title..."
+        onChange={(e) => {
+          if (e.target.value.length <= 50) {
+            setNoteTitle(e.target.value);
+          }
+        }}
+        maxLength={50}
+        placeholder="Enter note title... (max 50 chars)"
         className="text-2xl font-bold py-2 focus:outline-none focus:border-blue-500 transition-colors"
       />
+      {noteTitle.length === 50 && (
+        <div className="text-red-500 text-sm">Title reached max length (50)</div>
+      )}
       <EditorContent editor={editor} />
     </div>
   );

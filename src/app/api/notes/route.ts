@@ -74,6 +74,12 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
+    if (title && title.length > 50) {
+      return NextResponse.json(
+        { error: "Title cannot exceed 50 characters" },
+        { status: 400 }
+      );
+    }
 
     // Update the note
     const { data, error } = await supabase
@@ -127,6 +133,12 @@ export async function POST(request: NextRequest) {
     if (!notes) {
       return NextResponse.json(
         { error: "Notes content is required" },
+        { status: 400 }
+      );
+    }
+    if (title && title.length > 30) {
+      return NextResponse.json(
+        { error: "Title cannot exceed 30 characters" },
         { status: 400 }
       );
     }

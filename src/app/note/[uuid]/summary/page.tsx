@@ -89,6 +89,7 @@ export default function Page({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
+          title: note.title,
           text: note.notes,
           model: selectedModel,
           length: summaryLength,

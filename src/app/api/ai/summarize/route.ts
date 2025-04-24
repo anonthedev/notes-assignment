@@ -7,7 +7,7 @@ const groq = new Groq({
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, model = "llama3-70b-8192", length = "medium", tone = "neutral" } = await request.json();
+    const { text, title, model = "llama3-70b-8192", length = "medium", tone = "neutral" } = await request.json();
 
     if (!text) {
       return NextResponse.json(
@@ -26,6 +26,11 @@ export async function POST(request: NextRequest) {
     else if (tone === "technical") toneInstruction = " Use technical language and precise terminology.";
     else if (tone === "simple") toneInstruction = " Use simple, easy-to-understand language.";
 
+    let summaryPrompt = `Please summarize the following text in a ${length} length and ${tone} tone:`;
+    if (title) {
+      summaryPrompt = `Please summarize the following note (title: ${title}) in a ${length} length and ${tone} tone:`;
+    }
+
     const completion = await groq.chat.completions.create({
       messages: [
         {
@@ -35,7 +40,7 @@ export async function POST(request: NextRequest) {
         },
         {
           role: "user",
-          content: `Please summarize the following text in a ${length} length and ${tone} tone:\n\n${text}`,
+          content: `${summaryPrompt}\n\n${text}`,
         },
       ],
       model,
@@ -53,4 +58,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}
