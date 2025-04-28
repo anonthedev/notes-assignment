@@ -158,15 +158,15 @@ export default function Page({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold">Note Summary</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
           <Select
             value={selectedModel}
             onValueChange={setSelectedModel}
             disabled={isLoadingModels || isGenerating}
           >
-            <SelectTrigger className="w-[250px]">
+            <SelectTrigger className="w-full md:w-[250px]">
               <SelectValue placeholder="Select a model" />
             </SelectTrigger>
             <SelectContent>
@@ -177,13 +177,13 @@ export default function Page({
               ))}
             </SelectContent>
           </Select>
-
+  
           <Select
             value={summaryLength}
             onValueChange={setSummaryLength}
             disabled={isGenerating}
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-full md:w-[150px]">
               <SelectValue placeholder="Summary Length" />
             </SelectTrigger>
             <SelectContent>
@@ -192,13 +192,13 @@ export default function Page({
               <SelectItem value="detailed">Detailed</SelectItem>
             </SelectContent>
           </Select>
-          
+  
           <Select
             value={summaryTone}
             onValueChange={setSummaryTone}
             disabled={isGenerating}
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-full md:w-[150px]">
               <SelectValue placeholder="Summary Tone" />
             </SelectTrigger>
             <SelectContent>
@@ -209,18 +209,20 @@ export default function Page({
               <SelectItem value="simple">Simple</SelectItem>
             </SelectContent>
           </Select>
+  
           <Button
             variant="outline"
             size="sm"
             onClick={() => generateSummary(false)}
             disabled={isGenerating}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full md:w-auto"
           >
             <RefreshCw className={`h-4 w-4 ${isGenerating ? 'animate-spin' : ''}`} />
             Regenerate Summary
           </Button>
         </div>
       </div>
+  
       <div className="space-y-6">
         <div className="bg-background rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">
@@ -241,23 +243,24 @@ export default function Page({
             )}
           </div>
         </div>
-
+  
         {(isGenerating || newSummary) && (
           <div className="bg-background rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
               <h3 className="text-lg font-medium">New Summary</h3>
               {newSummary && (
                 <Button
                   variant="default"
                   size="sm"
                   onClick={handleSaveNewSummary}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 w-full md:w-auto"
                 >
                   <Save className="h-4 w-4" />
                   Save New Summary
                 </Button>
               )}
             </div>
+  
             {isGenerating ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -279,4 +282,5 @@ export default function Page({
       </div>
     </div>
   );
+  
 } 
